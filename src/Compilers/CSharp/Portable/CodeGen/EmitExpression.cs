@@ -3172,6 +3172,8 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
             else
             {
                 _builder.EmitArrayElementStore(_module.Translate(arrayType), syntaxNode, _diagnostics.DiagnosticBag);
+                if (_ilEmitStyle == ILEmitStyle.Debug)
+                    _builder.EmitOpCode(ILOpCode.Nop);
             }
         }
 
@@ -3231,11 +3233,15 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                     if (elementType.IsVerifierReference())
                     {
                         _builder.EmitOpCode(ILOpCode.Stelem_ref);
+                        if (_ilEmitStyle == ILEmitStyle.Debug)
+                            _builder.EmitOpCode(ILOpCode.Nop);
                     }
                     else
                     {
                         _builder.EmitOpCode(ILOpCode.Stelem);
                         EmitSymbolToken(elementType, syntaxNode);
+                        if (_ilEmitStyle == ILEmitStyle.Debug)
+                            _builder.EmitOpCode(ILOpCode.Nop);
                     }
                     break;
             }

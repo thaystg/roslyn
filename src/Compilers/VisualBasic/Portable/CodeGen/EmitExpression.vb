@@ -2087,6 +2087,9 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                 EmitVectorElementStore(arrayType, syntaxNode)
             Else
                 _builder.EmitArrayElementStore(_module.Translate(arrayType), syntaxNode, _diagnostics)
+                If _ilEmitStyle = ILEmitStyle.Debug Then
+                    _builder.EmitOpCode(ILOpCode.Nop)
+                End If
             End If
         End Sub
 
@@ -2134,9 +2137,15 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CodeGen
                 Case Else
                     If IsVerifierReference(elementType) Then
                         _builder.EmitOpCode(ILOpCode.Stelem_ref)
+                        If _ilEmitStyle = ILEmitStyle.Debug Then
+                            _builder.EmitOpCode(ILOpCode.Nop)
+                        End If
                     Else
                         _builder.EmitOpCode(ILOpCode.Stelem)
                         EmitSymbolToken(elementType, syntaxNode)
+                        If _ilEmitStyle = ILEmitStyle.Debug Then
+                            _builder.EmitOpCode(ILOpCode.Nop)
+                        End If
                     End If
 
             End Select
